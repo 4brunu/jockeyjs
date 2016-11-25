@@ -28,7 +28,7 @@
 
 #import "UIColor-Expanded.h"
 
-@interface JockeyViewController ()
+@interface JockeyViewController ()<WKNavigationDelegate>
 
 @end
 
@@ -37,6 +37,14 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    _webView = [[WKWebView alloc] initWithFrame:self.view.bounds configuration:[[WKWebViewConfiguration alloc] init]];
+    
+    [self.view addSubview:_webView];
+    
+    _webView.navigationDelegate = self;
+
+    
     [self refresh];
     
     // Listen for a JS event.
@@ -48,7 +56,7 @@
         [self toggleFullscreen:nil withDuration:0.3];
     }];
     
-    [Jockey on:@"toggle-fullscreen-with-callback" performAsync:^(UIWebView *webView, NSDictionary *payload, void (^complete)()) {
+    [Jockey on:@"toggle-fullscreen-with-callback" performAsync:^(WKWebView *webView, NSDictionary *payload, void (^complete)()) {
         NSTimeInterval duration = [[payload objectForKey:@"duration"] integerValue];
         
         [self toggleFullscreen:complete withDuration:duration];
@@ -61,9 +69,18 @@
     // Dispose of any resources that can be recreated.
 }
 
--(BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
+- (void)webView:(WKWebView *)webView
+    decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction
+    decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
 {
-    return [Jockey webView:_webView withUrl:[request URL]];
+    
+    if ([Jockey webView:_webView withUrl:navigationAction.request.URL]) {
+        decisionHandler(WKNavigationActionPolicyAllow);
+    }
+    else {
+        decisionHandler(WKNavigationActionPolicyCancel);
+    }
+    
 }
 
 - (IBAction)colorButtonPressed:(UIBarButtonItem *)sender {

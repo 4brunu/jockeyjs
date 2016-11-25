@@ -24,10 +24,11 @@
 //  WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #import <UIKit/UIKit.h>
+#import <WebKit/WebKit.h>
 
 @interface JockeyViewController : UIViewController <UIWebViewDelegate>
 
-@property (weak, nonatomic) IBOutlet UIWebView *webView;
+@property (strong, nonatomic) WKWebView *webView;
 
 - (IBAction)colorButtonPressed:(UIBarButtonItem *)sender;
 - (IBAction)refreshButtonPressed:(UIBarButtonItem *)sender;
