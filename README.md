@@ -11,15 +11,23 @@ Setup - iOS
 
 JockeyJS will help your iOS app communicate with a JavaScript application running inside a UIWebview.
 
-1. Download the latest JockeyJS into your iOS project directory.
-1. Add `JockeyJS/includes/Jockey.m` and `Jockey.h` to your project by right clicking inside XCode's Project Navigator and selecting "Add Files to \<YourProject\>"
+1. add `pod 'JockeyJS', :git => 'https://github.com/4brunu/jockeyjs.git', :commit => 'c5aa6e8'`to the podfile
+1. run `pod install` in the terminal
 1. In your web app, make sure to include `JockeyJS/js/jockey.js` as a script tag.
-1. Last, set your ViewController as the delegate of your UIWebView (`JockeyViewController` in the example code), then add the following method to your ViewController's `.m` file:
+1. Last, set your ViewController as the navigationDelegate of your WKWebView (`JockeyViewController` in the example code), then add the following method to your ViewController's `.m` file:
 
 ```objective-c
--(BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
-{
-	return [Jockey webView:webView withUrl:[request URL]];
+- (void)webView:(WKWebView *)webView
+    decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction
+    decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler {
+    
+    if ([Jockey webView:_webView withUrl:navigationAction.request.URL]) {
+        decisionHandler(WKNavigationActionPolicyAllow);
+    }
+    else {
+        decisionHandler(WKNavigationActionPolicyCancel);
+    }
+    
 }
 ```
 
