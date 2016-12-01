@@ -6,8 +6,14 @@ import com.google.gson.Gson;
 
 public class DefaultJockeyImpl extends JockeyImpl {
 	
+	public DefaultJockeyImpl(Gson gson) {
+		if (gson == null) {
+			gson = new Gson();
+		}
+		this.gson = gson;
+	}
+
 	private int messageCount = 0;
-	private Gson gson = new Gson();
 
 	@Override
 	public void send(String type, WebView toWebView, Object withPayload,

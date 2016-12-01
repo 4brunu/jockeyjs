@@ -31,10 +31,13 @@ import android.util.SparseArray;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import com.google.gson.Gson;
 import com.jockeyjs.JockeyHandler.OnCompletedListener;
 import com.jockeyjs.util.ForwardingWebViewClient;
 
 public abstract class JockeyImpl implements Jockey {
+
+	public Gson gson;
 
 	// A default Callback that does nothing.
 	protected static final JockeyCallback _DEFAULT = new JockeyCallback() {
@@ -154,7 +157,11 @@ public abstract class JockeyImpl implements Jockey {
 	}
 
 	public static Jockey getDefault() {
-		return new DefaultJockeyImpl();
+		return new DefaultJockeyImpl(null);
+	}
+
+	public static Jockey getDefault(Gson gson) {
+		return new DefaultJockeyImpl(gson);
 	}
 	
 	@Override
