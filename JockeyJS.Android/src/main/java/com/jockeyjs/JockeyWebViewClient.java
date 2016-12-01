@@ -41,7 +41,12 @@ class JockeyWebViewClient extends ForwardingWebViewClient {
 	private Gson _gson;
 
 	public JockeyWebViewClient(JockeyImpl jockey) {
-		_gson = jockey.gson;
+		if (jockey.gson == null) {
+			_gson = new Gson();
+		}
+		else {
+			_gson = jockey.gson;
+		}
 		_jockeyImpl = jockey;
 	}
 
