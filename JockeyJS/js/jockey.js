@@ -228,27 +228,28 @@
 
     // Dispatcher detection. Currently only supports iOS.
     // Looking for equivalent Android implementation.
-    var i = 0,
-        iOS = false,
-        iDevice = ['iPad', 'iPhone', 'iPod'];
+    // var i = 0,
+    //     iOS = false,
+    //     iDevice = ['iPad', 'iPhone', 'iPod'];
 
-    for (; i < iDevice.length; i++) {
-        if (navigator.platform.indexOf(iDevice[i]) >= 0) {
-            iOS = true;
-            break;
-        }
-    }
+    // for (; i < iDevice.length; i++) {
+    //     if (navigator.platform.indexOf(iDevice[i]) >= 0) {
+    //         iOS = true;
+    //         break;
+    //     }
+    // }
 
     // Detect UIWebview. In Mobile Safari proper, jockey urls cause a popup to
     // be shown that says "Safari cannot open page because the URL is invalid."
     // From here: http://stackoverflow.com/questions/4460205/detect-ipad-iphone-webview-via-javascript
 
-    var UIWebView  = /(iPhone|iPod|iPad).*AppleWebKit(?!.*Safari)/i.test(navigator.userAgent);
-    var isAndroid  = navigator.userAgent.toLowerCase().indexOf("android") > -1;
+    // var UIWebView  = /(iPhone|iPod|iPad).*AppleWebKit(?!.*Safari)/i.test(navigator.userAgent);
+    // var isAndroid  = navigator.userAgent.toLowerCase().indexOf("android") > -1;
 
-    if ((iOS && UIWebView) || isAndroid) {
-        Jockey.dispatchers.push(nativeDispatcher);
-    }
+    // if ((iOS && UIWebView) || isAndroid) {
+    //     Jockey.dispatchers.push(nativeDispatcher);
+    // }
+    Jockey.dispatchers.push(nativeDispatcher);
 
     Jockey.dispatchers.push(IframeDispatcher);
     window.addEventListener("message", $.proxy(Jockey.onMessageRecieved, Jockey), false);
