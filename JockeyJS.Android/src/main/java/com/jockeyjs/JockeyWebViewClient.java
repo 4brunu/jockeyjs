@@ -26,7 +26,11 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
+import android.net.Uri;
+import android.os.Build;
 import android.util.Log;
+import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
@@ -61,7 +65,30 @@ class JockeyWebViewClient extends ForwardingWebViewClient {
 	public WebViewClient delegate() {
 		return _delegate;
 	}
-	
+
+	@TargetApi(Build.VERSION_CODES.N)
+	@Override
+	public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+		if (delegate() != null
+				&& delegate().shouldOverrideUrlLoading(view, request))
+			return true;
+		try {
+			URI uri = new URI(request.getUrl().toString());
+
+			if (isJockeyScheme(uri)) {
+				processUri(view, uri);
+				return true;
+			}
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
+		} catch (HostValidationException e) {
+			e.printStackTrace();
+			Log.e("Jockey", "The source of the event could not be validated!");
+		}
+		return false;
+	}
+
+	@SuppressWarnings("deprecation")
 	@Override
 	public boolean shouldOverrideUrlLoading(WebView view, String url) {
 	

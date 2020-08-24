@@ -8,6 +8,8 @@ import android.os.Message;
 import android.view.KeyEvent;
 import android.webkit.HttpAuthHandler;
 import android.webkit.SslErrorHandler;
+import android.webkit.WebResourceError;
+import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -64,9 +66,19 @@ public abstract class ForwardingWebViewClient extends WebViewClient {
 			super.onPageStarted(view, url, favicon);
 	}
 
+	@TargetApi(android.os.Build.VERSION_CODES.M)
 	@Override
-	public void onReceivedError(WebView view, int errorCode,
-			String description, String failingUrl) {
+	public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
+		if (hasDelegate())
+			delegate()
+					.onReceivedError(view, request, error);
+		else
+			super.onReceivedError(view, request, error);
+	}
+
+	@SuppressWarnings("deprecation")
+	@Override
+	public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
 		if (hasDelegate())
 			delegate()
 					.onReceivedError(view, errorCode, description, failingUrl);
@@ -122,6 +134,16 @@ public abstract class ForwardingWebViewClient extends WebViewClient {
 			super.onScaleChanged(view, oldScale, newScale);
 	}
 
+	@TargetApi(Build.VERSION_CODES.LOLLIPOP)
+	@Override
+	public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
+		if (hasDelegate())
+			return delegate().shouldInterceptRequest(view, request);
+		else
+			return super.shouldInterceptRequest(view, request);
+	}
+
+	@SuppressWarnings("deprecation")
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	@Override
 	public WebResourceResponse shouldInterceptRequest(WebView view, String url) {

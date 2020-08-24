@@ -25,6 +25,8 @@ package com.jockeyjs;
 import java.util.Map;
 
 import android.content.Context;
+import android.os.Build;
+import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.widget.Toast;
 
@@ -86,9 +88,14 @@ public final class NativeOS extends CompositeJockeyHandler {
 			_vibrator = (Vibrator) _context.getSystemService(Context.VIBRATOR_SERVICE);
 		}
 
+		@SuppressWarnings("deprecation")
 		@Override
 		protected void doPerform(Map<Object, Object> payload) {
-			_vibrator.vibrate(_length);
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+				_vibrator.vibrate(VibrationEffect.createOneShot(200, VibrationEffect.DEFAULT_AMPLITUDE));
+			} else {
+				_vibrator.vibrate(_length);
+			}
 		}
 		
 		@Override
