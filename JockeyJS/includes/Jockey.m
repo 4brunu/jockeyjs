@@ -50,7 +50,7 @@
 
 + (void)on:(NSString*)type perform:(JockeyHandler)handler
 {
-    void (^ extended)(WKWebView *webView, NSDictionary *payload, void (^ complete)()) = ^(WKWebView *webView, NSDictionary *payload, void(^ complete)()) {
+    void (^ extended)(WKWebView *webView, NSDictionary *payload, void (^ complete)(void)) = ^(WKWebView *webView, NSDictionary *payload, void(^ complete)(void)) {
         handler(payload);
         complete();
     };
@@ -87,7 +87,7 @@
     [self send:type withPayload:payload toWebView:webView perform:nil];
 }
 
-+ (void)send:(NSString *)type withPayload:(id)payload toWebView:(WKWebView *)webView perform:(void (^)())complete {
++ (void)send:(NSString *)type withPayload:(id)payload toWebView:(WKWebView *)webView perform:(void (^)(void))complete {
     Jockey *jockey = [Jockey sharedInstance];
     
     NSNumber *messageId = jockey.messageCount;
@@ -113,7 +113,7 @@
         NSString *eventType = [url host];
         NSString *messageId = [[url path] substringFromIndex:1];
         NSString *query = [url query];
-        NSString *jsonString = [query stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+        NSString *jsonString = [query stringByRemovingPercentEncoding];
         
         NSError *error;
         NSDictionary *JSON = [NSJSONSerialization JSONObjectWithData: [jsonString dataUsingEncoding:NSUTF8StringEncoding]
@@ -144,7 +144,7 @@
 
     __block NSInteger executedCount = 0;
     
-    void (^complete)() = ^() {
+    void (^complete)(void) = ^() {
         executedCount += 1;
         
         if (executedCount >= [listenerList count]) {
@@ -169,7 +169,7 @@
 - (void)triggerCallbackForMessage:(NSNumber *)messageId {
     NSString *messageIdString = [messageId stringValue];
     
-    void (^ callback)() = [_callbacks objectForKey:messageIdString];
+    void (^ callback)(void) = [_callbacks objectForKey:messageIdString];
     
     if (callback != nil) {
         callback();

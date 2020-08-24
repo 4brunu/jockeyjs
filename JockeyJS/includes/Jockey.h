@@ -27,7 +27,7 @@
 #import <WebKit/WebKit.h>
 
 typedef void (^ JockeyHandler)(NSDictionary *payload);
-typedef void (^ JockeyAsyncHandler)(WKWebView *webView, NSDictionary *payload, void (^complete)());
+typedef void (^ JockeyAsyncHandler)(WKWebView *webView, NSDictionary *payload, void (^complete)(void));
 
 @interface Jockey : NSObject
 
@@ -35,7 +35,7 @@ typedef void (^ JockeyAsyncHandler)(WKWebView *webView, NSDictionary *payload, v
 + (void)on:(NSString*)type performAsync:(JockeyAsyncHandler)handler;
 + (void)off:(NSString *)type;
 + (void)send:(NSString*)type withPayload:(id)payload toWebView:(WKWebView*)webView;
-+ (void)send:(NSString *)type withPayload:(id)payload toWebView:(WKWebView *)webView perform:(void(^)())complete;
++ (void)send:(NSString *)type withPayload:(id)payload toWebView:(WKWebView *)webView perform:(void(^)(void))complete;
 
 + (BOOL)webView:(WKWebView*)webView withUrl:(NSURL*)url;
 
