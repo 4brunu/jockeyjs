@@ -28,6 +28,7 @@ import android.content.Context;
 import android.os.Build;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
+import android.os.VibratorManager;
 import android.widget.Toast;
 
 /**
@@ -85,7 +86,12 @@ public final class NativeOS extends CompositeJockeyHandler {
 		private VibrateHandler(Context context, long length) {
 			_context= context;
 			_length = length;
-			_vibrator = (Vibrator) _context.getSystemService(Context.VIBRATOR_SERVICE);
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+				VibratorManager vibratorManager = (VibratorManager) _context.getSystemService(Context.VIBRATOR_MANAGER_SERVICE);
+				_vibrator = vibratorManager.getDefaultVibrator();
+			} else {
+				_vibrator = (Vibrator) _context.getSystemService(Context.VIBRATOR_SERVICE);
+			}
 		}
 
 		@SuppressWarnings("deprecation")

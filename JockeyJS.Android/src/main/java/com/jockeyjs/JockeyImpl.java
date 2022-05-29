@@ -27,6 +27,7 @@ import java.util.Map;
 
 import android.annotation.SuppressLint;
 import android.os.Handler;
+import android.os.Looper;
 import android.util.SparseArray;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -51,7 +52,7 @@ public abstract class JockeyImpl implements Jockey {
 
 	private OnValidateListener _onValidateListener;
 
-	private Handler _handler = new Handler();
+	private Handler _handler = new Handler(Looper.getMainLooper());
 
 	private JockeyWebViewClient _client;
 
