@@ -83,6 +83,7 @@ public final class NativeOS extends CompositeJockeyHandler {
 		private Vibrator _vibrator;
 		private Context _context;
 		
+		@SuppressWarnings("deprecation")
 		private VibrateHandler(Context context, long length) {
 			_context= context;
 			_length = length;
